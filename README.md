@@ -48,10 +48,6 @@ public-hoist-pattern[]=*@nextui-org/*
 
 After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
 
-## License
-
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
-
 ### Explications des modifications :
 
 1. **Configuration Axios** :
@@ -66,3 +62,8 @@ Licensed under the [MIT license](https://github.com/nextui-org/next-app-template
    - La progression du téléchargement et les messages de statut sont gérés via des hooks `useState`.
 
 En utilisant ce code, votre application Next.js peut gérer les téléchargements de fichiers et afficher la progression et l'état des téléchargements.
+
+
+## License
+
+Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
