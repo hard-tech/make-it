@@ -1,4 +1,5 @@
 // services/upload-files.service.ts
+import Error from '@/app/error';
 import apiClient from './axiosConfig';
 
 const upload = (file: File, onUploadProgress: (progressEvent: ProgressEvent) => void) => {
