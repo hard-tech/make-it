@@ -1,4 +1,4 @@
-# Next.js & NextUI Template
+# Make-it (front-end)
 
 This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
 
@@ -48,22 +48,21 @@ public-hoist-pattern[]=*@nextui-org/*
 
 After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
 
-### Explications des modifications :
+## Explanation of Modifications
 
-1. **Configuration Axios** :
-   - Le fichier `axiosConfig.ts` configure Axios avec un `baseURL` et les en-têtes nécessaires. Vous pouvez définir `NEXT_PUBLIC_API_BASE_URL` dans votre fichier `.env.local` pour ajuster dynamiquement l'URL de base de l'API en fonction de votre environnement.
+1. **Axios Configuration**:
+   - The `axiosConfig.ts` file configures Axios with a `baseURL` and necessary headers. You can set `NEXT_PUBLIC_API_BASE_URL` in your `.env.local` file to dynamically adjust the API base URL based on your environment.
 
-2. **Service de téléchargement de fichiers** :
-   - Le fichier `upload-files.service.ts` gère les téléchargements de fichiers en utilisant Axios. Il inclut une fonction `upload` pour envoyer les fichiers avec la progression et une fonction `getFiles` pour récupérer la liste des fichiers téléchargés.
+2. **File Upload Service**:
+   - The `upload-files.service.ts` file handles file uploads using Axios. It includes an `upload` function to send files with progress tracking and a `getFiles` function to retrieve the list of uploaded files.
 
-3. **Composant fonctionnel `UploadFiles`** :
-   - Le composant utilise des hooks pour gérer l'état et les effets.
-   - Le composant appelle le service de téléchargement pour envoyer les fichiers et mettre à jour l'état en fonction des réponses du serveur.
-   - La progression du téléchargement et les messages de statut sont gérés via des hooks `useState`.
+3. **Functional Component `UploadFiles`**:
+   - The component uses hooks to manage state and effects.
+   - The component calls the upload service to send files and updates the state based on server responses.
+   - Upload progress and status messages are managed via `useState` hooks.
 
-En utilisant ce code, votre application Next.js peut gérer les téléchargements de fichiers et afficher la progression et l'état des téléchargements.
-
+By using this code, your Next.js application can handle file uploads and display upload progress and status.
 
 ## License
 
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE)
