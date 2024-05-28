@@ -2,13 +2,10 @@
 import axios from 'axios';
 
 export const checkConnection = async () => {
-  console.log("Checking connection");
   try {
     await axios.get('http://localhost:3003/api/files', { timeout: 50000 });
     return true;
   } catch (error) {
-    console.log(error);
-    
     return false;
   }
 };

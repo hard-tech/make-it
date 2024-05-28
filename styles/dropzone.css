@@ -1,12 +1,6 @@
 .dropzone {
     text-align: center;
-    padding: 30px;
-    border: 3px solid #eeeeee;
-    background-color: #000000;
-    color: #bdbdbd;
     cursor: pointer;
-    margin-bottom: 20px;
-    border-radius: 20px;
   }
   
   .selected-file-wrapper {
