@@ -54,6 +54,6 @@ if __name__ == "__main__":
     input_folder = sys.argv[1]
     temp = input_folder.split("/")
     # print(f"Input folder: {temp}");
-    output_file = f"public/outputs/{os.path.basename(temp[-1])}.pdf"
+    output_file = f"public/download/{os.path.basename(temp[-1])}.pdf"
 
     convert_images_to_pdf(input_folder, output_file)

@@ -27,7 +27,7 @@ const UploadFiles: React.FC = () => {
 
   useEffect(() => {
 
-    // set in folder name a random string length of 126 characters
+    // set a random string of length 126 characters in folder name
     if(localStorage.getItem('folderName') === null) {
       let randomString = generateRandomString(126);
       localStorage.setItem('folderName', randomString);
@@ -37,7 +37,7 @@ const UploadFiles: React.FC = () => {
     }
 
     async function checkConnectionStatus() {
-      const isConnected = true; // Tout le temps liée au back-end (en attendant le déploiement)
+      const isConnected = true; // Always connected to the backend (waiting for deployment)
       setConnection(isConnected);
     }
 
@@ -61,9 +61,9 @@ const UploadFiles: React.FC = () => {
       const response = UploadService.upload(file, folderName);
   
       toast.promise(response, {
-        pending: "Le fichier est en cours de téléchargement...",
-        success: `Le fichier ${file.name} a été téléchargé avec succès!`,
-        error: `Le fichier ${file.name} n'a pas pu être téléchargé!`,
+        pending: "The file is being uploaded...",
+        success: `The file ${file.name} was uploaded successfully!`,
+        error: `The file ${file.name} could not be uploaded!`,
       });
   
       const res = await response;
@@ -83,18 +83,19 @@ const UploadFiles: React.FC = () => {
     const response = UploadService.compileFile(folderName);
 
     toast.promise(response, {
-      pending: "Le fichier est en cours de téléchargement...",
-      success: `Le fichier ${folderName}.pdf a été compiler avec succès!`,
-      error: `Le fichier ${folderName}.pdf n'a pas pu être compiler!`,
+      pending: "The file is being compiled...",
+      success: `The pdf file was compiled successfully!`,
+      error: `The pdf file could not be compiled!`,
     });
 
     const res = await response;
 
     if (res.status === 200 || res.status === 201) {
-      console.log(`Compilie the file successfully: ${folderName}.pdf`); 
-      window.location.href = `outputs/${folderName}.pdf`;
+      console.log(`Compiled the file successfully: ${folderName}.pdf`); 
+      // open file in new tab
+      window.open(`download/${folderName}.pdf`);
     } else {
-      console.error(`Could not compilie the file: ${folderName}.pdf`, res.statusText);
+      console.error(`Could not compile the file: ${folderName}.pdf`, res.statusText);
     }
   };
 
@@ -132,18 +133,6 @@ const UploadFiles: React.FC = () => {
   } else {
     content = (
       <div className="m-5">
-        {/* <div className="mb-4 flex items-center">
-          <label htmlFor="folderName" className="min-w-max me-2">Folder Name</label>
-          <Input
-            type="text"
-            id="folderName"
-            variant="bordered"
-            value={folderName}
-            onChange={(e) => setFolderName(e.target.value)}
-            className="form-control"
-          />
-        </div> */}
-
         <div className="my-3">
           <Dropzone onDrop={onDrop}>
             {({ getRootProps, getInputProps }) => (
@@ -211,7 +200,7 @@ const UploadFiles: React.FC = () => {
                       })
                     }}
                   >
-                    renow folder name
+                    Renew folder name
                   </Button>
                 </aside>
               </section>
