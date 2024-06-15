@@ -35,3 +35,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#input
+public/download/*.pdf
+
+#downlaod
+public/uploads/*.png
+public/uploads/*.jpeg
+public/uploads/*.jpg
