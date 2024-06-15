@@ -1,21 +1,18 @@
-"use client";
+"use client"
+
 import React, { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
-import UploadService from "../services/upload-files.service";
-import { checkConnection } from "@/services/axiosConfig";
+import UploadService from "../services/comPyling/upload-files.service";
+// import { checkConnection } from "@/services/axiosConfig";
 import { title } from "@/components/primitives";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import "../styles/dropzone.css";
 
-
 // Toastify
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface ProgressInfo {
-  percentage: number;
-  fileName: string;
-}
+import { Input } from "@nextui-org/input";
+import { generateRandomString } from "@/utils/generateRandomString";
 
 interface FileInfo {
   name: string;
@@ -23,36 +20,29 @@ interface FileInfo {
 }
 
 const UploadFiles: React.FC = () => {
-  
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [progressInfos, setProgressInfos] = useState<ProgressInfo[]>([]);
-  const [message, setMessage] = useState<string[]>([]);
   const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
   const [connection, setConnection] = useState<boolean | null>(null);
+  const [folderName, setFolderName] = useState<string>('');
 
   useEffect(() => {
-    async function checkConnectionAndFetchFiles() {
-      const isConnected = await checkConnection();
-      setConnection(isConnected);
 
-      if (isConnected) {
-        UploadService.getFiles()
-          .then((response) => {
-            setFileInfos(response.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching files: ", error);
-            setConnection(false);
-          });
-      }
+    // set in folder name a random string length of 126 characters
+    if(localStorage.getItem('folderName') === null) {
+      let randomString = generateRandomString(126);
+      localStorage.setItem('folderName', randomString);
+      setFolderName(randomString);
+    } else {
+      setFolderName(localStorage.getItem('folderName') as string);
     }
 
-    checkConnectionAndFetchFiles();
-  }, []);
+    async function checkConnectionStatus() {
+      const isConnected = true; // Tout le temps liée au back-end (en attendant le déploiement)
+      setConnection(isConnected);
+    }
 
-  const showToastMessage = () => {
-    toast.success("Success Notification !");
-  };
+    checkConnectionStatus();
+  }, []);
 
   const onDrop = (files: File[]) => {
     if (files.length > 0) {
@@ -61,92 +51,53 @@ const UploadFiles: React.FC = () => {
   };
 
   const uploadFiles = () => {
-    const _progressInfos = selectedFiles.map((file) => ({
-      percentage: 0,
-      fileName: file.name,
-    }));
-    setProgressInfos(_progressInfos);
-    setMessage([]);
-
     selectedFiles.forEach((file, index) => {
       upload(index, file);
     });
   };
-
-  const upload = (idx: number, file: File) => {
-    let DirectoryHashCode = window.localStorage.getItem('DirectoryHashCode');
-    if (!DirectoryHashCode) {
-      DirectoryHashCode = generateRandomString(128);
-      window.localStorage.setItem('DirectoryHashCode', DirectoryHashCode);
-    }
-
-    const _progressInfos = [...progressInfos];
-
-    UploadService.upload(file)
-      .then((response) => {
-
-        (event: ProgressEvent) => {
-          const newProgress = [..._progressInfos];
-          newProgress[idx] = {
-            percentage: Math.round((100 * event.loaded) / event.total),
-            fileName: file.name,
-          };
-          setProgressInfos(newProgress);
-        }
-
-        // setMessage((prevMessage) => [
-        //   ...prevMessage,
-        //   `Uploaded the file successfully: ${file.name}`,
-        // ]);
-
-        toast.success(`Uploaded the file successfully: ${file.name}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          rtl: true,
-          pauseOnFocusLoss: true,
-          progress: undefined,
-        });
-
-        return UploadService.getFiles();
-      })
-      .then((files) => {
-        setFileInfos(files.data);
-      })
-      .catch(() => {
-        const newProgress = [..._progressInfos];
-        newProgress[idx] = { percentage: 0, fileName: file.name };
-        setProgressInfos(newProgress);
-        // setMessage((prevMessage) => [
-        //   ...prevMessage,
-        //   `Could not upload the file: ${file.name}`,
-        // ]);
-
-        toast.error(`Could not upload the file: ${file.name}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+  
+  const upload = async (idx: number, file: File) => {
+    try {
+      const response = UploadService.upload(file, folderName);
+  
+      toast.promise(response, {
+        pending: "Le fichier est en cours de téléchargement...",
+        success: `Le fichier ${file.name} a été téléchargé avec succès!`,
+        error: `Le fichier ${file.name} n'a pas pu être téléchargé!`,
       });
-  };
-
-  const generateRandomString = (length: number) => {
-    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < length; i++) {
-      result += charset.charAt(Math.floor(Math.random() * charset.length));
+  
+      const res = await response;
+  
+      if (res.status === 200 || res.status === 201) {
+        console.log(`Uploaded the file successfully: ${file.name}`);
+      } else {
+        console.error(`Could not upload the file: ${file.name}`, res.statusText);
+      }
+    } catch (error) {
+      console.error(`Could not upload the file: ${file.name}`, error);
     }
-    return result;
+  };
+  
+
+  const getCompilePictures = async () => {
+    const response = UploadService.compileFile(folderName);
+
+    toast.promise(response, {
+      pending: "Le fichier est en cours de téléchargement...",
+      success: `Le fichier ${folderName}.pdf a été compiler avec succès!`,
+      error: `Le fichier ${folderName}.pdf n'a pas pu être compiler!`,
+    });
+
+    const res = await response;
+
+    if (res.status === 200 || res.status === 201) {
+      console.log(`Compilie the file successfully: ${folderName}.pdf`); 
+      window.location.href = `outputs/${folderName}.pdf`;
+    } else {
+      console.error(`Could not compilie the file: ${folderName}.pdf`, res.statusText);
+    }
   };
 
-  // Rendering based on connection status
   let content;
   if (connection === null) {
     content = <div>Checking connection...</div>;
@@ -181,23 +132,17 @@ const UploadFiles: React.FC = () => {
   } else {
     content = (
       <div className="m-5">
-        {progressInfos.map((progressInfo, index) => (
-          <div className="mb-2" key={index}>
-            <span>{progressInfo.fileName}</span>
-            <div className="progress">
-              <div
-                className="progress-bar progress-bar-info"
-                role="progressbar"
-                aria-valuenow={progressInfo.percentage}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                style={{ width: `${progressInfo.percentage}%` }}
-              >
-                {progressInfo.percentage}%
-              </div>
-            </div>
-          </div>
-        ))}
+        {/* <div className="mb-4 flex items-center">
+          <label htmlFor="folderName" className="min-w-max me-2">Folder Name</label>
+          <Input
+            type="text"
+            id="folderName"
+            variant="bordered"
+            value={folderName}
+            onChange={(e) => setFolderName(e.target.value)}
+            className="form-control"
+          />
+        </div> */}
 
         <div className="my-3">
           <Dropzone onDrop={onDrop}>
@@ -227,11 +172,46 @@ const UploadFiles: React.FC = () => {
                 <aside className="selected-file-wrapper">
                   <Button
                     color="secondary"
-                    className="btn btn-success"
+                    className="btn btn-success mx-2"
                     disabled={selectedFiles.length === 0}
+                    isDisabled={selectedFiles.length === 0}
                     onClick={uploadFiles}
                   >
                     Upload
+                  </Button>
+                  <Button
+                    color="success"
+                    isDisabled={selectedFiles.length === 0}
+                    className="btn btn-success mx-2 text-white"
+                    onClick={getCompilePictures}
+                  >
+                    Compile
+                  </Button>
+                  <Button
+                    color="danger"
+                    className="btn btn-success mx-2"
+                    isDisabled={selectedFiles.length === 0}
+                    onClick={() => {
+                      localStorage.removeItem('folderName')
+
+                      let randomString = generateRandomString(126);
+                      localStorage.setItem('folderName', randomString);
+                      setFolderName(randomString);
+
+                      toast.success('Folder name is changed', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        rtl: true,
+                        pauseOnFocusLoss: true,
+                        progress: undefined,
+                      })
+                    }}
+                  >
+                    renow folder name
                   </Button>
                 </aside>
               </section>

@@ -11,7 +11,7 @@
 	"dependencies": {
 		"@nextui-org/button": "^2.0.31",
 		"@nextui-org/code": "^2.0.27",
-		"@nextui-org/input": "^2.1.21",
+		"@nextui-org/input": "^2.2.2",
 		"@nextui-org/kbd": "^2.0.28",
 		"@nextui-org/link": "^2.0.29",
 		"@nextui-org/navbar": "^2.0.30",
@@ -29,6 +29,7 @@
 		"autoprefixer": "10.4.19",
 		"axios": "^1.7.1",
 		"clsx": "^2.0.0",
+		"cors": "^2.8.5",
 		"eslint": "^8.56.0",
 		"eslint-config-next": "14.2.1",
 		"eslint-config-prettier": "^8.2.0",
@@ -39,9 +40,13 @@
 		"eslint-plugin-react": "^7.23.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-unused-imports": "^3.2.0",
+		"express": "^4.19.2",
+		"formidable": "^3.5.1",
 		"framer-motion": "^11.1.1",
 		"intl-messageformat": "^10.5.0",
+		"multer": "^1.4.5-lts.1",
 		"next": "14.2.3",
+		"next-connect": "^1.0.0",
 		"next-themes": "^0.2.1",
 		"postcss": "8.4.38",
 		"react": "18.3.1",
@@ -51,5 +56,11 @@
 		"tailwind-variants": "^0.1.20",
 		"tailwindcss": "3.4.3",
 		"typescript": "5.0.4"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.17",
+		"@types/express": "^4.17.21",
+		"@types/formidable": "^3.4.5",
+		"@types/multer": "^1.4.11"
 	}
 }
