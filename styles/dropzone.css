@@ -1,0 +1,13 @@
+.dropzone {
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .selected-file-wrapper {
+    text-align: center;
+  }
+  
+  .selected-file {
+    color: #ffffff; 
+    font-weight: bold;
+  }
