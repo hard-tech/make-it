@@ -1,0 +1,6 @@
+{
+    "AutoDeleting":{
+        "Timeout": 86400,
+        "Enabled": true
+    }
+}

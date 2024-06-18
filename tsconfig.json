@@ -30,7 +30,7 @@
     ".next/types/**/*.ts",
     "components/uploadFiles.component.tsx",
     "app/api/compyling/uploadImage/[folderName]/route.ts",
-    "public/download/**/*.pdf"
+    "public/download/*.pdf"
   ],
   "exclude": ["node_modules"]
 }
