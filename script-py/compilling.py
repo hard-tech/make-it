@@ -5,6 +5,7 @@ import os
 import sys
 
 def convert_images_to_pdf(input_folder, output_file):
+    # All type of pictures is accepted
     images = [f for f in os.listdir(input_folder) if (f.endswith('.png') | f.endswith('.jpg') | f.endswith('.jpeg')) ]
     if not images:
         print("Aucune image PNG trouvée dans le dossier spécifié.")
@@ -14,7 +15,7 @@ def convert_images_to_pdf(input_folder, output_file):
 
     if os.path.exists(output_file):
         os.remove(output_file)
-        print(f"Ancien PDF supprimé: {output_file}")
+        # print(f"Ancien PDF supprimé: {output_file}")
 
     pdf = canvas.Canvas(output_file, pagesize=letter)
 
@@ -27,12 +28,25 @@ def convert_images_to_pdf(input_folder, output_file):
         pdf.showPage()
 
     pdf.save()
-    print(f"PDF généré: {output_file}")
+    print(output_file)
 
     # Supprime les images après la compilation
     for image_name in images:
         image_path = os.path.join(input_folder, image_name)
-        os.remove(image_path)
+        print(f"Attempting to delete: {image_path}")  # Debugging statement
+        try:
+            os.remove(image_path)
+        except FileNotFoundError:
+            print(f"File not found: {image_path}")
+
+
+    try:
+        # remove drictory 
+        os.rmdir(input_folder)
+        print(f"Directory deleted: {input_folder}")
+    except FileNotFoundError:
+        print(f"File not found: {input_folder}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -40,6 +54,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     input_folder = sys.argv[1]
-    output_file = f"outputs/{sys.argv[1].split('/')[1]}.pdf"
+    temp = input_folder.split("/")
+    # print(f"Input folder: {temp}");
+    output_file = f"outputs/{os.path.basename(temp[1])}.pdf"
 
     convert_images_to_pdf(input_folder, output_file)

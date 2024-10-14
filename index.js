@@ -1,8 +1,10 @@
 const express = require('express');
+// const fastAPI
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 const app = express();
 const port = process.env.PORT || 3003;
@@ -39,7 +41,31 @@ app.post('/api/uploadImage/:folderName', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
-  res.status(200).send({ fileName: req.file.filename, filePath: `/uploads/${req.params.folderName}/${req.file.filename}` });
+  res.status(200).send({message: "File uploaded successfully !"});
+});
+
+app.get('/api/compileScreens/:folderName', (req, res) => {
+    // Lancer la commande de compilation
+    const folderName = req.params.folderName;
+    const command = `python3 script-py/compilling.py uploads/${folderName}`;
+  
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing script: ${error.message}`);
+        return res.status(500).send('Error processing file.');
+      }
+  
+      if (stderr) {
+        console.error(`Script stderr: ${stderr}`);
+        return res.status(500).send('Error processing file.');
+      }
+  
+      console.log(`Script stdout: ${stdout.trim()}`);
+      res.status(200).send({
+        message: "File compiled successfully!",
+        pathCompileFile: `/outputs/${folderName}.pdf`
+      });
+    });
 });
 
 // Route pour récupérer les fichiers téléchargés
@@ -49,7 +75,7 @@ app.get('/api/files', (req, res) => {
 });
 
 // Servir les fichiers statiques
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
